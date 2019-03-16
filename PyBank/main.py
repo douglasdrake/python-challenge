@@ -18,21 +18,30 @@ def summarize_budget_data(budget_df):
     # Get the number of months
     results_df['Number of months'] = [budget_df["Date"].nunique()]
     
+    # Get a column of changes
+    budget_df['Change'] = budget_df["Profit/Losses"].diff()
+
     # Find the min and max
-    min_profit_row = budget_df["Profit/Losses"].idxmin()
-    max_profit_row = budget_df["Profit/Losses"].idxmax()
-    results_df['Minimum'] = budget_df.iloc[min_profit_row, 1]
+    min_profit_row = budget_df["Change"].idxmin()
+    max_profit_row = budget_df["Change"].idxmax()
+    results_df['Minimum'] = budget_df.iloc[min_profit_row, 2]
     results_df['Minimum month'] = budget_df.iloc[min_profit_row, 0]
-    results_df['Maximum'] = budget_df.iloc[max_profit_row, 1]
+    results_df['Maximum'] = budget_df.iloc[max_profit_row, 2]
     results_df['Maximum month'] = budget_df.iloc[max_profit_row, 0]
 
-    results_df['Average'] = budget_df["Profit/Losses"].mean()
+    results_df['Average'] = budget_df["Change"].mean()
     results_df['Total'] = budget_df["Profit/Losses"].sum()
 
     return results_df
 
 def print_budget_results(results_df):
-    return
+    print("Financial Analysis")
+    print("-"*66)
+    print(f"Total Months: {results_df['Number of months'][0]}")
+    print(f"Total: ${results_df['Total'][0]}")
+    print(f"Average Change: ${results_df['Average'][0]}")
+    print(f"Greatest Increase in Profits: {results_df['Maximum month'][0]} (${results_df['Maximum'][0]})")
+    print(f"Greatest Decrease in Profits: {results_df['Minimum month'][0]} (${results_df['Minimum'][0]})")
 
 def write_budget_results(results_df, output_path = OUTPUT_PATH, output_file = OUTPUT_FILE):
     csv_path = os.path.join(output_path, output_file)
