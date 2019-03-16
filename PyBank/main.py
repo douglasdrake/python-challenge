@@ -13,9 +13,7 @@ OUTPUT_PATH = os.path.join("", OUTPUT_DIRECTORY)
 # Load the data
 def load_budget_data(budget_path = BUDGET_PATH, budget_file = BUDGET_FILE):
     csv_path = os.path.join(budget_path, budget_file)
-    df = pd.read_csv(csv_path)
-    df.astype({'Profit/Losses': 'int64'})
-    return df
+    return pd.read_csv(csv_path)
 
 # Compute the required summaries and return the results in a 
 # pandas dataframe
