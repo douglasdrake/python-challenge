@@ -3,6 +3,7 @@
 # Data Analytics and Visualization Cohort 3
 
 # Load the dependencies
+import sys
 import os
 import pandas as pd
 
@@ -13,6 +14,9 @@ ELECTION_PATH = os.path.join("", ELECTION_DIRECTORY)
 OUTPUT_FILE = "election_summary.csv"
 OUTPUT_DIRECTORY = "Resources"
 OUTPUT_PATH = os.path.join("", OUTPUT_DIRECTORY)
+OUTPUT_TXT_FILE = "election_summary.txt"
+OUTPUT_TXT_DIRECTORY = "" # keep in main directory for now
+OUTPUT_TXT_PATH = os.path.join("", OUTPUT_TXT_DIRECTORY)
 
 # Load the data
 def load_election_data(election_path = ELECTION_PATH, election_file = ELECTION_FILE):
@@ -36,8 +40,8 @@ def summarize_election_data(election_df):
     
     return results_df
 
-# Print the results to standard output
-def print_election_results(results_df):
+# Print the results to standard output or a file
+def print_election_results(results_df, file = sys.stdout):
     # Define two helper functions for printing the output
     def max_line_length(df):
         # Determine the longest line of output
@@ -47,25 +51,25 @@ def print_election_results(results_df):
         return max_name_length + max_vote_length + 12
 
     def print_separator(n):
-        print("-" * n)
- 
+        print("-" * n, file = file)
+
     width = max_line_length(results_df)
     
-    print("Election Results")
+    print("Election Results", file = file)
     print_separator(width)
     
-    print(f"Total Votes: {results_df['Total Votes'].sum()}")
+    print(f"Total Votes: {results_df['Total Votes'].sum()}", file = file)
     print_separator(width)
 
     # iterate over each row printing the results
     for row in results_df.itertuples():
-        print(f"{row[1]}: {row[3]:6.3f}% ({row[2]})")
+        print(f"{row[1]}: {row[3]:6.3f}% ({row[2]})", file = file)
     
     print_separator(width)
     
     # Our data frame gives the vote counts in descending order
     # The winner is the first row
-    print(f"Winner: {results_df.loc[0, 'Candidate']}")
+    print(f"Winner: {results_df.loc[0, 'Candidate']}", file = file)
     print_separator(width)
 
 # Write the results as a csv file
@@ -77,7 +81,17 @@ def write_election_results(results_df, output_path = OUTPUT_PATH, output_file = 
 def analyze_election_data():
     election_df = load_election_data()
     results_df = summarize_election_data(election_df)
+
+    # first print to the screen
     print_election_results(results_df)
+
+    # now print to an output txt file - mimic screen output
+    txt_path = os.path.join(OUTPUT_TXT_PATH, OUTPUT_TXT_FILE)
+    filestream = open(txt_path, 'w', newline='')
+    print_election_results(results_df, file = filestream)
+    filestream.close()
+    
+    # now write a csv file with the results
     write_election_results(results_df)
 
 analyze_election_data()

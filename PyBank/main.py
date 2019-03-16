@@ -4,6 +4,7 @@
 
 # Load the dependencies
 import os
+import sys
 import pandas as pd
 
 # Define input and output paths
@@ -13,6 +14,9 @@ BUDGET_PATH = os.path.join("", BUDGET_DIRECTORY)
 OUTPUT_FILE = "budget_summary.csv"
 OUTPUT_DIRECTORY = "Resources"
 OUTPUT_PATH = os.path.join("", OUTPUT_DIRECTORY)
+OUTPUT_TXT_FILE = "budget_summary.txt"
+OUTPUT_TXT_DIRECTORY = "" # keep in main directory for now
+OUTPUT_TXT_PATH = os.path.join("", OUTPUT_TXT_DIRECTORY)
 
 # Load the data
 def load_budget_data(budget_path = BUDGET_PATH, budget_file = BUDGET_FILE):
@@ -43,16 +47,16 @@ def summarize_budget_data(budget_df):
 
     return results_df
 
-# Print the results to standard output
-def print_budget_results(results_df):
-    print("")
-    print("Financial Analysis")
-    print("-"*60)
-    print(f"Total Months: {results_df['Number of months'][0]}")
-    print(f"Total: ${results_df['Total'][0]}")
-    print(f"Average Change: ${results_df['Average'][0]:.2f}")
-    print(f"Greatest Increase in Profits: {results_df['Maximum month'][0]} (${results_df['Maximum'][0]:.0f})")
-    print(f"Greatest Decrease in Profits: {results_df['Minimum month'][0]} (${results_df['Minimum'][0]:.0f})")
+# Print the results to standard output or a given file
+def print_budget_results(results_df, file = sys.stdout):
+    print("", file = file)
+    print("Financial Analysis",  file = file)
+    print("-"*60, file = file)
+    print(f"Total Months: {results_df['Number of months'][0]}", file = file)
+    print(f"Total: ${results_df['Total'][0]}", file = file)
+    print(f"Average Change: ${results_df['Average'][0]:.2f}", file = file)
+    print(f"Greatest Increase in Profits: {results_df['Maximum month'][0]} (${results_df['Maximum'][0]:.0f})", file = file)
+    print(f"Greatest Decrease in Profits: {results_df['Minimum month'][0]} (${results_df['Minimum'][0]:.0f})", file = file)
 
 # Write the results as a csv file
 def write_budget_results(results_df, output_path = OUTPUT_PATH, output_file = OUTPUT_FILE):
@@ -63,7 +67,17 @@ def write_budget_results(results_df, output_path = OUTPUT_PATH, output_file = OU
 def analyze_budget_data():
     budget_df = load_budget_data()
     results_df = summarize_budget_data(budget_df)
+
+    # print summary to the screen
     print_budget_results(results_df)
+
+    # print summary to a txt file
+    txt_path = os.path.join(OUTPUT_TXT_PATH, OUTPUT_TXT_FILE)
+    filestream = open(txt_path, 'w', newline='')
+    print_budget_results(results_df, file = filestream)
+    filestream.close()
+
+    # now write a csv file
     write_budget_results(results_df)
 
 analyze_budget_data()
