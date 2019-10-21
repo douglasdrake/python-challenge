@@ -1,7 +1,3 @@
-# Douglas Drake \python-challenge\PyPoll\main.py
-# Homework 3
-# Data Analytics and Visualization Cohort 3
-
 # Load the dependencies
 import sys
 import os

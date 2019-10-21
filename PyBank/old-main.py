@@ -1,5 +1,3 @@
-# Douglas Drake python-challenge homework
-# Doing this without pandas
 
 # Load the dependencies
 import os
